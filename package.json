@@ -1,0 +1,63 @@
+{
+    "name": "stock-predictor",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Stock predictor by Lecosoft",
+    "license": "MIT",
+    "author": "Lecosoft",
+    "scripts": {
+        "build": "vite build --base=/stock-predictor",
+        "clean": "rimraf dist public *.tgz",
+        "predeploy": "npm run build && touch dist/.nojekyll && cp dist/index.html dist/404.html",
+        "deploy": "gh-pages --dotfiles -d dist",
+        "prepare": "husky install",
+        "start": "NODE_ENV=development vite",
+        "test": "jest",
+        "typecheck": "tsc -p tsconfig.json --noEmit",
+        "upgrade-dependencies": "npx npm-upgrade -pd"
+    },
+    "lint-staged": {
+        "package.json": "sort-package-json",
+        "*.md": "prettier --write",
+        "*.{ts,tsx,js}": ["prettier --write"]
+    },
+    "prettier": {
+        "tabWidth": 4,
+        "singleQuote": false,
+        "trailingComma": "es5",
+        "printWidth": 120,
+        "arrowParens": "avoid",
+        "endOfLine": "auto",
+        "parser": "typescript"
+    },
+    "dependencies": {
+        "axios": "^0.27.2",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-router-dom": "^6.3.0",
+        "react-transition-group": "^4.4.5",
+        "styled-components": "^5.3.5",
+        "uuid": "^8.3.2"
+    },
+    "devDependencies": {
+        "@testing-library/jest-dom": "^5.16.4",
+        "@testing-library/react": "^12.1.4",
+        "@types/axios": "^0.14.0",
+        "@types/react": "^17.0.42",
+        "@types/react-dom": "^17.0.14",
+        "@types/react-transition-group": "^4.4.5",
+        "@types/styled-components": "^5.1.25",
+        "@types/uuid": "^8.3.4",
+        "@vitejs/plugin-react": "^2.0.0",
+        "gh-pages": "^4.0.0",
+        "husky": "^8.0.1",
+        "jest": "^28.1.3",
+        "jest-environment-jsdom": "^28.1.3",
+        "lint-staged": "^13.0.3",
+        "prettier": "^2.7.1",
+        "rimraf": "^3.0.2",
+        "sort-package-json": "^1.57.0",
+        "typescript": "^4.7.4",
+        "vite": "^3.0.0"
+    }
+}
