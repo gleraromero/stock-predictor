@@ -20,7 +20,7 @@ export class TimeInterval {
         yesterdayStart.setDate(new Date().getDate() - 1);
         yesterdayStart.setHours(0, 0, 0, 0);
 
-        return new TimeInterval(new Timestamp(yesterdayStart), Timestamp.now());
+        return new TimeInterval(Timestamp.fromDate(yesterdayStart), Timestamp.now());
     }
 
     public static lastMonth() {
@@ -28,7 +28,7 @@ export class TimeInterval {
         lastMonthStart.setDate(new Date().getDate() - 30);
         lastMonthStart.setHours(0, 0, 0, 0);
 
-        return new TimeInterval(new Timestamp(lastMonthStart), Timestamp.now());
+        return new TimeInterval(Timestamp.fromDate(lastMonthStart), Timestamp.now());
     }
 
     public static lastSixMonths() {
@@ -36,7 +36,7 @@ export class TimeInterval {
         lastSixMonthsStart.setDate(new Date().getDate() - 30 * 6);
         lastSixMonthsStart.setHours(0, 0, 0, 0);
 
-        return new TimeInterval(new Timestamp(lastSixMonthsStart), Timestamp.now());
+        return new TimeInterval(Timestamp.fromDate(lastSixMonthsStart), Timestamp.now());
     }
 
     public static lastYear() {
@@ -44,7 +44,7 @@ export class TimeInterval {
         lastYearStart.setDate(new Date().getDate() - 365);
         lastYearStart.setHours(0, 0, 0, 0);
 
-        return new TimeInterval(new Timestamp(lastYearStart), Timestamp.now());
+        return new TimeInterval(Timestamp.fromDate(lastYearStart), Timestamp.now());
     }
 
     public static yearToDate() {
@@ -53,7 +53,7 @@ export class TimeInterval {
         yearStart.setDate(1);
         yearStart.setHours(0, 0, 0, 0);
 
-        return new TimeInterval(new Timestamp(yearStart), Timestamp.now());
+        return new TimeInterval(Timestamp.fromDate(yearStart), Timestamp.now());
     }
 
     public includes(ts: Timestamp) {

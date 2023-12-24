@@ -16,28 +16,47 @@ export const TrendChart = ({ trend }: TrendChartProps) => {
     }
 
     const stockAnalyst = new StockAnalyst();
+    const x = trend.points().map(point => point.timestamp().toString());
+    const y = trend.points().map(point => point.close());
+    const yRange = [Math.min(...y) - 0.3 * trend.height(), Math.max(...y) + 0.3 * trend.height()];
     return (
         <div>
             <Plot
                 data={[
                     {
                         name: "",
-                        x: trend.points().map(point => point.timestamp().toString()),
-                        y: trend.points().map(point => point.price()),
+                        x,
+                        y,
                         type: "scatter",
                         mode: "lines+markers",
                         marker: { color: COLORS.chartLine, size: 4 },
                         hovertemplate: "%{x}<br>$%{y}",
                     },
+                    {
+                        name: "",
+                        x: [trend.firstPoint().timestamp().toString(), trend.lastPoint().timestamp().toString()],
+                        y: [stockAnalyst.support(trend), stockAnalyst.support(trend)],
+                        type: "scatter",
+                        mode: "lines",
+                        hoverinfo: "none",
+                        line: { dash: "dash", color: COLORS.support },
+                    },
+                    {
+                        name: "",
+                        x: [trend.firstPoint().timestamp().toString(), trend.lastPoint().timestamp().toString()],
+                        y: [stockAnalyst.resistance(trend), stockAnalyst.resistance(trend)],
+                        type: "scatter",
+                        mode: "lines",
+                        hoverinfo: "none",
+                        line: { dash: "dash", color: COLORS.resistance },
+                    },
                 ]}
                 layout={{
                     autosize: true,
                     margin: { b: 20, t: 0, l: 0, r: 40 },
-                    xaxis: {
-                        type: "date",
-                        tickformat: "%b %d, %y",
-                    },
-                    yaxis: { range: [trend.minPrice() * 0.8, trend.maxPrice() * 1.2], side: "right" },
+                    xaxis: { type: "date", tickformat: "%b %d, %y", fixedrange: true },
+                    yaxis: { range: yRange, side: "right", fixedrange: true },
+                    showlegend: false,
                 }}
                 config={{
                     displayModeBar: false,

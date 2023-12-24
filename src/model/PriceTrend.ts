@@ -1,21 +1,46 @@
 import { TimeInterval } from "./TimeInterval";
+import { TimeResolution } from "./TimeResolution";
 import { Timestamp } from "./Timestamp";
 
 export class PricePoint {
     private _timestamp: Timestamp;
-    private _price: number;
+    private _open: number;
+    private _close: number;
+    private _high: number;
+    private _low: number;
+    private _volume: number;
 
-    constructor(timestamp: Timestamp, price: number) {
+    constructor(timestamp: Timestamp, open: number, close: number, high: number, low: number, volume: number) {
         this._timestamp = timestamp;
-        this._price = price;
+        this._open = open;
+        this._close = close;
+        this._high = high;
+        this._low = low;
+        this._volume = volume;
     }
 
     public timestamp() {
         return this._timestamp;
     }
 
-    public price() {
-        return this._price;
+    public open() {
+        return this._open;
+    }
+
+    public close() {
+        return this._close;
+    }
+
+    public high() {
+        return this._high;
+    }
+
+    public low() {
+        return this._low;
+    }
+
+    public volume() {
+        return this._volume;
     }
 }
 
@@ -35,46 +60,56 @@ export class PriceTrend {
         return this._points.length === 0;
     }
 
-    public minPrice() {
-        if (this.isEmpty()) {
-            throw new Error("The trendline is empty, there is no minimum price.");
-        }
-        return Math.min(...this._points.map(point => point.price()));
-    }
-
-    public maxPrice() {
-        if (this.isEmpty()) {
-            throw new Error("The trendline is empty, there is no maximum price.");
-        }
-        return Math.max(...this._points.map(point => point.price()));
-    }
-
     public points() {
         return this._points;
     }
 
-    public pointCount() {
-        return this._points.length;
+    public firstPoint() {
+        if (this.isEmpty()) {
+            throw new Error("Can't retrieve first point from PriceTrend as it is empty.");
+        }
+        return this._points[0];
+    }
+
+    public lastPoint() {
+        if (this.isEmpty()) {
+            throw new Error("Can't retrieve first point from PriceTrend as it is empty.");
+        }
+        return this._points[this._points.length - 1];
+    }
+
+    public height() {
+        return (
+            Math.max(...this._points.map(point => point.close())) -
+            Math.min(...this._points.map(point => point.close()))
+        );
     }
 
     public forInterval(interval: TimeInterval) {
         return new PriceTrend(this.points().filter(point => interval.includes(point.timestamp())));
     }
 
-    [Symbol.iterator]() {
-        let index = 0;
+    public forResolution(resolution: TimeResolution) {
+        const points: PricePoint[] = [];
+        for (const point of this.points()) {
+            const projectedTs = resolution.project(point.timestamp());
+            if (points.length === 0 || !projectedTs.equalTo(points[points.length - 1].timestamp())) {
+                points.push(
+                    new PricePoint(projectedTs, point.open(), point.close(), point.high(), point.low(), point.volume())
+                );
+            } else {
+                const lastPoint = points[points.length - 1];
+                points[points.length - 1] = new PricePoint(
+                    lastPoint.timestamp(),
+                    lastPoint.open(),
+                    point.close(),
+                    Math.max(lastPoint.high(), point.high()),
+                    Math.min(lastPoint.low(), point.low()),
+                    lastPoint.volume() + point.volume()
+                );
+            }
+        }
 
-        // Return the iterator object
-        return {
-            next: () => {
-                if (index < this._points.length) {
-                    // Return the next value in the sequence
-                    return { value: this._points[index++], done: false };
-                } else {
-                    // Indicate that the iteration is complete
-                    return { done: true };
-                }
-            },
-        };
+        return new PriceTrend(points);
     }
 }
