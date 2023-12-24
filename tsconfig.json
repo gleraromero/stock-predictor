@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+      "baseUrl": ".",
       "esModuleInterop": true,
       "jsx": "react-jsx",
       "lib": ["dom", "es2017", "es2020", "es2021.String"],
