@@ -7,10 +7,7 @@ type MultiWindowTrendChartProps = { trend: PriceTrend };
 
 export const MultiWindowTrendChart = ({ trend }: MultiWindowTrendChartProps) => {
     return (
-        <Tabs defaultActiveKey="1D" className="mb-3">
-            <Tab eventKey="1D" title="1D">
-                <TrendChart trend={trend.forInterval(TimeInterval.lastDay())} />
-            </Tab>
+        <Tabs defaultActiveKey="1M" className="mb-3">
             <Tab eventKey="1M" title="1M">
                 <TrendChart trend={trend.forInterval(TimeInterval.lastMonth())} />
             </Tab>

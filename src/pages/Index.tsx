@@ -1,23 +1,21 @@
-import { Card, Col, Container, Row } from "react-bootstrap";
+import { useState } from "react";
+import { Card, Col, Container, Form, Row } from "react-bootstrap";
 import { MultiWindowTrendChart } from "src/components/MultiWindowTrendChart";
-import { PricePoint, PriceTrend } from "src/model/PriceTrend";
-import { Timestamp } from "src/model/Timestamp";
+import { PriceRepository } from "src/model/PriceRepository";
 import { Page } from "./Page";
 
 export const Index = () => {
-    const trend = new PriceTrend([
-        new PricePoint(Timestamp.fromString("2023-01-01"), 3582),
-        new PricePoint(Timestamp.fromString("2023-02-01"), 3550),
-        new PricePoint(Timestamp.fromString("2023-03-01"), 3565),
-        new PricePoint(Timestamp.fromString("2023-05-01"), 3595),
-        new PricePoint(Timestamp.fromString("2023-06-01"), 3620),
-        new PricePoint(Timestamp.fromString("2023-07-01"), 3610),
-        new PricePoint(Timestamp.fromString("2023-08-01"), 3605),
-        new PricePoint(Timestamp.fromString("2023-09-01"), 3598),
-        new PricePoint(Timestamp.fromString("2023-10-01"), 3625),
-        new PricePoint(Timestamp.fromString("2023-11-01"), 3675),
-        new PricePoint(Timestamp.fromString("2023-12-01"), 3680),
-    ]);
+    const [selectedAction, setAction] = useState("GSPC");
+
+    const priceRepository = new PriceRepository();
+    console.log(selectedAction);
+    const trend = priceRepository.trendFor(selectedAction);
+    console.log(trend.points()[0].price());
+
+    const onActionChange = (event: any) => {
+        console.log(event);
+        setAction(event.target.value);
+    };
 
     return (
         <Page>
@@ -28,6 +26,13 @@ export const Index = () => {
                             <Card.Header>Summary</Card.Header>
                             <Card.Body>
                                 <Card.Text>Visualize stock prices, trends and indicators.</Card.Text>
+                                <Form.Select className="mb-3" onChange={onActionChange}>
+                                    {priceRepository.actions().map(action => (
+                                        <option key={action.ticker()} value={action.ticker()}>
+                                            {action.name()}
+                                        </option>
+                                    ))}
+                                </Form.Select>
                                 <MultiWindowTrendChart trend={trend} />
                             </Card.Body>
                         </Card>

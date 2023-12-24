@@ -46,8 +46,8 @@ export const TrendChart = ({ trend }: TrendChartProps) => {
                 style={{ width: "100%", height: "200px" }}
             />
             <Stack direction="horizontal" gap={1}>
-                <Badge>Resistance: ${stockAnalyst.resistance(trend)}</Badge>&nbsp;
-                <Badge>Support: ${stockAnalyst.support(trend)}</Badge>
+                <Badge>Resistance: ${stockAnalyst.resistance(trend).toFixed(2)}</Badge>&nbsp;
+                <Badge>Support: ${stockAnalyst.support(trend).toFixed(2)}</Badge>
             </Stack>
         </div>
     );
