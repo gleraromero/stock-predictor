@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { Form } from "react-bootstrap";
 import { PriceRepository } from "src/model/PriceRepository";
-import { MultiWindowTabGroup } from "./MultiWindowTabGroup";
+import { TimeInterval } from "src/model/TimeInterval";
+import { TimeResolution } from "src/model/TimeResolution";
 import { TrendChart } from "./TrendChart";
 
 type StockVisualizerProps = {
     priceRepository: PriceRepository;
+    interval: TimeInterval;
+    resolution: TimeResolution;
 };
 
-export const StockVisualizer = ({ priceRepository }: StockVisualizerProps) => {
+export const StockVisualizer = ({ priceRepository, interval, resolution }: StockVisualizerProps) => {
     const [selectedAction, setAction] = useState("GSPC");
 
     const trend = priceRepository.trendFor(selectedAction);
@@ -22,9 +25,7 @@ export const StockVisualizer = ({ priceRepository }: StockVisualizerProps) => {
                     </option>
                 ))}
             </Form.Select>
-            <MultiWindowTabGroup>
-                {(interval, resolution) => <TrendChart trend={trend.forInterval(interval).forResolution(resolution)} />}
-            </MultiWindowTabGroup>
+            <TrendChart trend={trend.forInterval(interval).forResolution(resolution)} />
         </div>
     );
 };
