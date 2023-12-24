@@ -64,4 +64,8 @@ export class Timestamp {
     public toString() {
         return this._datetime.toISOString();
     }
+
+    public toDateString() {
+        return this._datetime.toISOString().substring(0, 10);
+    }
 }

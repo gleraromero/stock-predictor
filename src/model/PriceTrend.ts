@@ -46,6 +46,8 @@ export class PricePoint {
 
 export class PriceTrend {
     private _points: PricePoint[];
+    private _resistance: number;
+    private _support: number;
 
     constructor(points: PricePoint[]) {
         for (let i = 0; i < points.length - 1; ++i) {
@@ -54,6 +56,8 @@ export class PriceTrend {
             }
         }
         this._points = points;
+        this._resistance = Math.max(...this._points.map(point => point.close()));
+        this._support = Math.min(...this._points.map(point => point.close()));
     }
 
     public isEmpty() {
@@ -82,6 +86,10 @@ export class PriceTrend {
         return this._points[this._points.length - 1];
     }
 
+    public lastTimestamp() {
+        return this.lastPoint().timestamp();
+    }
+
     public height() {
         return (
             Math.max(...this._points.map(point => point.close())) -
@@ -90,11 +98,15 @@ export class PriceTrend {
     }
 
     public resistance() {
-        return Math.max(...this.points().map(point => point.high()));
+        return this._resistance;
     }
 
     public support() {
-        return Math.min(...this.points().map(point => point.low()));
+        return this._support;
+    }
+
+    public timestamps() {
+        return this._points.map(point => point.timestamp());
     }
 
     public forInterval(interval: TimeInterval) {

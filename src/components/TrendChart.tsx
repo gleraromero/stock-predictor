@@ -1,11 +1,12 @@
 import { Alert, Badge, Stack } from "react-bootstrap";
 import Plot from "react-plotly.js";
 import { PriceTrend } from "src/model/PriceTrend";
+import { Operation, Trade } from "src/model/Trade";
 import { COLORS } from "src/style/Theme";
 
-type TrendChartProps = { trend: PriceTrend };
+type TrendChartProps = { trend: PriceTrend; trades?: Trade[] };
 
-export const TrendChart = ({ trend }: TrendChartProps) => {
+export const TrendChart = ({ trend, trades }: TrendChartProps) => {
     if (trend.isEmpty()) {
         return (
             <Alert key={"info"} variant={"info"}>
@@ -17,6 +18,8 @@ export const TrendChart = ({ trend }: TrendChartProps) => {
     const x = trend.points().map(point => point.timestamp().toString());
     const y = trend.points().map(point => point.close());
     const yRange = [Math.min(...y) - 0.3 * trend.height(), Math.max(...y) + 0.3 * trend.height()];
+    const buyTrades = (trades ?? []).filter(trade => trade.operation() == Operation.BUY);
+    const sellTrades = (trades ?? []).filter(trade => trade.operation() == Operation.SELL);
     return (
         <div>
             <Plot
@@ -47,6 +50,25 @@ export const TrendChart = ({ trend }: TrendChartProps) => {
                         mode: "lines",
                         hoverinfo: "none",
                         line: { dash: "dash", color: COLORS.resistance },
+                    },
+                    // Trades
+                    {
+                        name: "",
+                        x: buyTrades.map(trade => trade.timestamp().toString()),
+                        y: buyTrades.map(trade => trade.pricePerUnit()),
+                        type: "scatter",
+                        mode: "markers",
+                        marker: { color: COLORS.buyTrade, size: 10, symbol: "square" },
+                        hovertext: buyTrades.map(trade => trade.toString()),
+                    },
+                    {
+                        name: "",
+                        x: sellTrades.map(trade => trade.timestamp().toString()),
+                        y: sellTrades.map(trade => trade.pricePerUnit()),
+                        type: "scatter",
+                        mode: "markers",
+                        marker: { color: COLORS.sellTrade, size: 10, symbol: "cross" },
+                        hovertext: sellTrades.map(trade => trade.toString()),
                     },
                 ]}
                 layout={{
