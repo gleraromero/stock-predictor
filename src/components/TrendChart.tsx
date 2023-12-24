@@ -1,7 +1,6 @@
 import { Alert, Badge, Stack } from "react-bootstrap";
 import Plot from "react-plotly.js";
 import { PriceTrend } from "src/model/PriceTrend";
-import { StockAnalyst } from "src/model/StockAnalyst";
 import { COLORS } from "src/style/Theme";
 
 type TrendChartProps = { trend: PriceTrend };
@@ -15,7 +14,6 @@ export const TrendChart = ({ trend }: TrendChartProps) => {
         );
     }
 
-    const stockAnalyst = new StockAnalyst();
     const x = trend.points().map(point => point.timestamp().toString());
     const y = trend.points().map(point => point.close());
     const yRange = [Math.min(...y) - 0.3 * trend.height(), Math.max(...y) + 0.3 * trend.height()];
@@ -35,7 +33,7 @@ export const TrendChart = ({ trend }: TrendChartProps) => {
                     {
                         name: "",
                         x: [trend.firstPoint().timestamp().toString(), trend.lastPoint().timestamp().toString()],
-                        y: [stockAnalyst.support(trend), stockAnalyst.support(trend)],
+                        y: [trend.support(), trend.support()],
                         type: "scatter",
                         mode: "lines",
                         hoverinfo: "none",
@@ -44,7 +42,7 @@ export const TrendChart = ({ trend }: TrendChartProps) => {
                     {
                         name: "",
                         x: [trend.firstPoint().timestamp().toString(), trend.lastPoint().timestamp().toString()],
-                        y: [stockAnalyst.resistance(trend), stockAnalyst.resistance(trend)],
+                        y: [trend.resistance(), trend.resistance()],
                         type: "scatter",
                         mode: "lines",
                         hoverinfo: "none",
@@ -65,8 +63,8 @@ export const TrendChart = ({ trend }: TrendChartProps) => {
                 style={{ width: "100%", height: "200px" }}
             />
             <Stack direction="horizontal" gap={1}>
-                <Badge>Resistance: ${stockAnalyst.resistance(trend).toFixed(2)}</Badge>&nbsp;
-                <Badge>Support: ${stockAnalyst.support(trend).toFixed(2)}</Badge>
+                <Badge>Resistance: ${trend.resistance().toFixed(2)}</Badge>&nbsp;
+                <Badge>Support: ${trend.support().toFixed(2)}</Badge>
             </Stack>
         </div>
     );

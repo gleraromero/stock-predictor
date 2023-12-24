@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Form } from "react-bootstrap";
 import { PriceRepository } from "src/model/PriceRepository";
-import { MultiWindowTrendChart } from "./MultiWindowTrendChart";
+import { MultiWindowTabGroup } from "./MultiWindowTabGroup";
+import { TrendChart } from "./TrendChart";
 
 type StockVisualizerProps = {
     priceRepository: PriceRepository;
@@ -21,7 +22,9 @@ export const StockVisualizer = ({ priceRepository }: StockVisualizerProps) => {
                     </option>
                 ))}
             </Form.Select>
-            <MultiWindowTrendChart trend={trend} />
+            <MultiWindowTabGroup>
+                {(interval, resolution) => <TrendChart trend={trend.forInterval(interval).forResolution(resolution)} />}
+            </MultiWindowTabGroup>
         </div>
     );
 };

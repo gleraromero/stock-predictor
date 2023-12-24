@@ -1,5 +1,5 @@
 import { Card, Col, Container, Row } from "react-bootstrap";
-import { AdviseList } from "src/components/AdviseList";
+import { AdviseVisualizer } from "src/components/AdviseVisualizer";
 import { StockVisualizer } from "src/components/StockVisualizer";
 import { PriceRepository } from "src/model/PriceRepository";
 import { StockAnalyst } from "src/model/StockAnalyst";
@@ -8,8 +8,6 @@ import { Page } from "./Page";
 export const Index = () => {
     const priceRepo = new PriceRepository();
     const analyst = new StockAnalyst();
-
-    const advises = analyst.advise(priceRepo);
 
     return (
         <Page>
@@ -22,7 +20,7 @@ export const Index = () => {
                                 <Card.Text>
                                     Recommended stocks for purchase and sale based on the implemented trading strategy.
                                 </Card.Text>
-                                <AdviseList advises={advises} />
+                                <AdviseVisualizer repository={priceRepo} analyst={analyst} />
                             </Card.Body>
                         </Card>
                     </Col>

@@ -1,23 +1,12 @@
-import { InvestmentAdvise, Recommendation } from "./InvestmentAdvise";
-import { PriceRepository } from "./PriceRepository";
+import { Heuristic } from "./Heuristic";
+import { InvestmentAdvise, scoreToRecommendation } from "./InvestmentAdvise";
 import { PriceTrend } from "./PriceTrend";
+import { StockAction } from "./StockAction";
 
 export class StockAnalyst {
-    public resistance(trend: PriceTrend) {
-        return Math.max(...trend.points().map(point => point.high()));
-    }
-
-    public support(trend: PriceTrend) {
-        return Math.min(...trend.points().map(point => point.low()));
-    }
-
-    public advise(priceRepo: PriceRepository): InvestmentAdvise[] {
-        return [
-            new InvestmentAdvise(priceRepo.actionForTicker("UAL"), Recommendation.BUY, [
-                ">60% below the support for the 1Y period",
-                "6M minimum",
-            ]),
-            new InvestmentAdvise(priceRepo.actionForTicker("GSPC"), Recommendation.SELL, ["All time high"]),
-        ];
+    public advise(stock: StockAction, trend: PriceTrend): InvestmentAdvise {
+        const result = Heuristic.resistanceDistance().score(trend);
+        const recommendation = scoreToRecommendation(result.score());
+        return new InvestmentAdvise(stock, recommendation, [result.reason()]);
     }
 }

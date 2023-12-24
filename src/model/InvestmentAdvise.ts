@@ -7,6 +7,20 @@ export enum Recommendation {
     UNDERPERFORM = "Underperform",
     SELL = "Sell",
 }
+
+export const scoreToRecommendation = (score: number) => {
+    if (score > 0.8) {
+        return Recommendation.STRONG_BUY;
+    } else if (score > 0.6) {
+        return Recommendation.BUY;
+    } else if (score > 0.4) {
+        return Recommendation.HOLD;
+    } else if (score > 0.2) {
+        return Recommendation.UNDERPERFORM;
+    } else {
+        return Recommendation.SELL;
+    }
+};
 export class InvestmentAdvise {
     private _stock: StockAction;
     private _recommendation: Recommendation;

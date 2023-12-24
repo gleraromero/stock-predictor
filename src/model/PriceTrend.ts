@@ -60,6 +60,10 @@ export class PriceTrend {
         return this._points.length === 0;
     }
 
+    public pointCount() {
+        return this._points.length;
+    }
+
     public points() {
         return this._points;
     }
@@ -83,6 +87,14 @@ export class PriceTrend {
             Math.max(...this._points.map(point => point.close())) -
             Math.min(...this._points.map(point => point.close()))
         );
+    }
+
+    public resistance() {
+        return Math.max(...this.points().map(point => point.high()));
+    }
+
+    public support() {
+        return Math.min(...this.points().map(point => point.low()));
     }
 
     public forInterval(interval: TimeInterval) {

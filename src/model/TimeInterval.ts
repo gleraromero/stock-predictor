@@ -56,6 +56,10 @@ export class TimeInterval {
         return new TimeInterval(Timestamp.fromDate(yearStart), Timestamp.now());
     }
 
+    public static allTime() {
+        return new TimeInterval(Timestamp.fromString("1900-01-01"), Timestamp.fromString("2050-01-01"));
+    }
+
     public includes(ts: Timestamp) {
         return this._start.lessEqualThan(ts) && ts.lessEqualThan(this._end);
     }
