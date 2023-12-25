@@ -7,20 +7,14 @@ type MultiWindowTabGroupProps = { children: (interval: TimeInterval, resolution:
 
 export const MultiWindowTabGroup = ({ children }: MultiWindowTabGroupProps) => {
     return (
-        <Tabs defaultActiveKey="1M" className="mb-3">
-            <Tab eventKey="1M" title="1M">
-                {children(TimeInterval.lastMonth(), TimeResolution.daily())}
+        <Tabs defaultActiveKey="weekly" className="mb-3">
+            <Tab eventKey="daily" title="Daily">
+                {children(TimeInterval.allTime(), TimeResolution.daily())}
             </Tab>
-            <Tab eventKey="6M" title="6M">
-                {children(TimeInterval.lastSixMonths(), TimeResolution.weekly())}
+            <Tab eventKey="weekly" title="Weekly">
+                {children(TimeInterval.allTime(), TimeResolution.weekly())}
             </Tab>
-            <Tab eventKey="YTD" title="YTD">
-                {children(TimeInterval.yearToDate(), TimeResolution.weekly())}
-            </Tab>
-            <Tab eventKey="1Y" title="1Y">
-                {children(TimeInterval.lastYear(), TimeResolution.weekly())}
-            </Tab>
-            <Tab eventKey="All" title="All">
+            <Tab eventKey="monthly" title="Monthly">
                 {children(TimeInterval.allTime(), TimeResolution.monthly())}
             </Tab>
         </Tabs>

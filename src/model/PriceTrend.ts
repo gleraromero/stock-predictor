@@ -109,6 +109,10 @@ export class PriceTrend {
         return this._points.map(point => point.timestamp());
     }
 
+    public interval() {
+        return new TimeInterval(this._points[0].timestamp(), this.lastPoint().timestamp());
+    }
+
     public forInterval(interval: TimeInterval) {
         return new PriceTrend(this.points().filter(point => interval.includes(point.timestamp())));
     }

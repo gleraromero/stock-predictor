@@ -12,13 +12,13 @@ type StockVisualizerProps = {
 };
 
 export const StockVisualizer = ({ priceRepository, interval, resolution }: StockVisualizerProps) => {
-    const [selectedStock, setStock] = useState("GSPC");
+    const [selectedStock, setStock] = useState(priceRepository.actions()[0].ticker());
 
     const trend = priceRepository.trendFor(selectedStock);
 
     return (
         <div>
-            <StockSelect onStockSelected={setStock} stocks={priceRepository.actions()} />
+            <StockSelect onStockSelected={setStock} stocks={priceRepository.actions()} selectedStock={selectedStock} />
             <TrendChart trend={trend.forInterval(interval).forResolution(resolution)} />
         </div>
     );

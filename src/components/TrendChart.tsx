@@ -18,8 +18,12 @@ export const TrendChart = ({ trend, trades }: TrendChartProps) => {
     const x = trend.points().map(point => point.timestamp().toString());
     const y = trend.points().map(point => point.close());
     const yRange = [Math.min(...y) - 0.3 * trend.height(), Math.max(...y) + 0.3 * trend.height()];
-    const buyTrades = (trades ?? []).filter(trade => trade.operation() == Operation.BUY);
-    const sellTrades = (trades ?? []).filter(trade => trade.operation() == Operation.SELL);
+    const buyTrades = (trades ?? []).filter(
+        trade => trade.operation() == Operation.BUY && trend.interval().includes(trade.timestamp())
+    );
+    const sellTrades = (trades ?? []).filter(
+        trade => trade.operation() == Operation.SELL && trend.interval().includes(trade.timestamp())
+    );
     return (
         <div>
             <Plot
@@ -74,7 +78,7 @@ export const TrendChart = ({ trend, trades }: TrendChartProps) => {
                 layout={{
                     autosize: true,
                     margin: { b: 20, t: 0, l: 0, r: 40 },
-                    xaxis: { type: "date", tickformat: "%b %d, %y", fixedrange: true },
+                    xaxis: { type: "date", tickformat: "%b %d, %y" },
                     yaxis: { range: yRange, side: "right", fixedrange: true },
                     showlegend: false,
                 }}

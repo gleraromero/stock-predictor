@@ -1,3 +1,22 @@
+export class TimeDelta {
+    private _ticks: number;
+    constructor(ticks: number) {
+        this._ticks = ticks;
+    }
+
+    public static days(count: number) {
+        return new TimeDelta(count * 86400000);
+    }
+
+    public static hours(count: number) {
+        return new TimeDelta(count * 3600000);
+    }
+
+    public ticks() {
+        return this._ticks;
+    }
+}
+
 export class Timestamp {
     private _datetime: Date;
 
@@ -53,6 +72,10 @@ export class Timestamp {
         return this._datetime.getMilliseconds();
     }
 
+    public ticks() {
+        return this._datetime.getTime();
+    }
+
     public lessEqualThan(anotherTs: Timestamp) {
         return this._datetime < anotherTs._datetime;
     }
@@ -67,5 +90,9 @@ export class Timestamp {
 
     public toDateString() {
         return this._datetime.toISOString().substring(0, 10);
+    }
+
+    public minus(delta: TimeDelta) {
+        return new Timestamp(this._datetime.getTime() - delta.ticks());
     }
 }

@@ -1,12 +1,26 @@
-import GSPCJSON from "assets/GSPC.json";
-import UALJSON from "assets/UAL.json";
+import quotesJSON from "assets/quotes.json";
 import { PricePoint, PriceTrend } from "./PriceTrend";
 import { StockAction } from "./StockAction";
 import { Timestamp } from "./Timestamp";
 
 export class PriceRepository {
+    private _quotes: any;
+    private _actions: StockAction[];
+
+    public static fromFile() {
+        return new PriceRepository(quotesJSON);
+    }
+
+    constructor(quotes: any) {
+        this._quotes = quotes;
+        this._actions = Object.keys(quotes)
+            .map(ticker => new StockAction(ticker, (quotesJSON as any)[ticker].name))
+            .filter(action => action.ticker() != undefined);
+        this._actions.sort((a, b) => a.name().localeCompare(b.name()));
+    }
+
     public actions() {
-        return [new StockAction("S&P 500", "GSPC"), new StockAction("United Airlines", "UAL")];
+        return this._actions;
     }
 
     public actionForTicker(ticker: string): StockAction {
@@ -18,31 +32,26 @@ export class PriceRepository {
     }
 
     public trendFor(ticker: string) {
-        const priceJSON = this.fileFor(ticker);
+        const quote = this._quotes[ticker];
+        if (!quote) {
+            throw new Error(`There is no data for ticker ${ticker}`);
+        }
+
         const points: PricePoint[] = [];
-        for (let i = 0; i < priceJSON.timestamp.length; ++i) {
-            points.push(
-                new PricePoint(
-                    Timestamp.fromDate(new Date(priceJSON.timestamp[i] * 1000)),
-                    priceJSON.open[i],
-                    priceJSON.close[i],
-                    priceJSON.high[i],
-                    priceJSON.low[i],
-                    priceJSON.volume[i]
-                )
-            );
+        for (let i = 0; i < quote.timestamp.length; ++i) {
+            if (quote.close[i]) {
+                points.push(
+                    new PricePoint(
+                        Timestamp.fromDate(new Date(quote.timestamp[i] * 1000)),
+                        quote.open[i],
+                        quote.close[i],
+                        quote.high[i],
+                        quote.low[i],
+                        quote.volume[i]
+                    )
+                );
+            }
         }
         return new PriceTrend(points);
-    }
-
-    private fileFor(ticker: string) {
-        switch (ticker) {
-            case "GSPC":
-                return GSPCJSON;
-            case "UAL":
-                return UALJSON;
-            default:
-                throw new Error(`There is no data for ticket ${ticker}`);
-        }
     }
 }
