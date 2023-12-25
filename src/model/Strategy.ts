@@ -32,8 +32,14 @@ export class StrategyResult {
     }
 }
 
+type StrategyWeights = {
+    macdNormStrength: number;
+    sr: number;
+    scoreBuyThreshold: number;
+    scoreSellThreshold: number;
+};
 export class Strategy {
-    public run(trend: PriceTrend, budget = 10000): StrategyResult {
+    public run(trend: PriceTrend, budget = 10000, weights: StrategyWeights): StrategyResult {
         const points = trend.points();
 
         const macdIndicator = new MACDIndicator(12, 24, 9);
@@ -44,19 +50,16 @@ export class Strategy {
             const point = points[i];
             macdIndicator.addPoint(point.close());
             srIndicator.addPoint(point.close());
-            if (
-                srIndicator.normalizedDistanceToResistance() > 0.7 &&
-                macdIndicator.isBullish() &&
-                position.available() > point.close()
-            ) {
+
+            let score = 0.0;
+            score += macdIndicator.normalizedStrength() * weights.macdNormStrength;
+            score += (srIndicator.normalizedDistanceToResistance() - 0.5) * weights.sr;
+
+            if (score > weights.scoreBuyThreshold && position.available() > point.close()) {
                 const unitPrice = point.close();
                 const unitsToBuy = Math.floor(position.available() / unitPrice);
                 position.operate(new Trade(point.timestamp(), Operation.BUY, unitPrice, unitsToBuy));
-            } else if (
-                srIndicator.normalizedDistanceToResistance() < 0.3 &&
-                !macdIndicator.isBullish() &&
-                position.unitsInPossesion() > 0
-            ) {
+            } else if (score < weights.scoreSellThreshold && position.unitsInPossesion() > 0) {
                 const unitsToSell = position.unitsInPossesion();
                 position.operate(new Trade(point.timestamp(), Operation.SELL, point.close(), unitsToSell));
             }

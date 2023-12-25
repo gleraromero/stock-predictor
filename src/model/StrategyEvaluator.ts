@@ -13,7 +13,7 @@ export class StrategyEvaluation {
         for (const result of Object.values(results)) {
             gains.push(result.gains());
         }
-        gains.sort();
+        gains.sort((a, b) => a - b);
 
         this._medianGains = gains[Math.floor(gains.length / 2)];
         this._medianGainsPercentage = (100.0 * this._medianGains) / budget;
@@ -39,11 +39,21 @@ export class StrategyEvaluator {
         this._repo = repo;
     }
 
-    public evaluate(strategy: Strategy, interval: TimeInterval, budget: number) {
+    public evaluate(
+        strategy: Strategy,
+        interval: TimeInterval,
+        budget: number,
+        weights = {
+            sr: 5,
+            macdNormStrength: 2,
+            scoreBuyThreshold: 0.2,
+            scoreSellThreshold: -1.5,
+        }
+    ) {
         const results: { [ticker: string]: StrategyResult } = {};
         for (const action of this._repo.actions()) {
             const trend = this._repo.trendFor(action.ticker()).forInterval(interval);
-            const result = strategy.run(trend, budget);
+            const result = strategy.run(trend, budget, weights);
             results[action.ticker()] = result;
         }
         return new StrategyEvaluation(results, budget);

@@ -8,6 +8,7 @@ export const NavHeader = () => (
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="me-auto">
                     <Nav.Link href="/">Home</Nav.Link>
+                    <Nav.Link href="/optimization">Optimization</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
         </Container>

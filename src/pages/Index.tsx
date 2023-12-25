@@ -14,7 +14,7 @@ import { Page } from "./Page";
 export const Index = () => {
     const [selectedStock, setStock] = useState("GSPC");
 
-    const evaluationInterval = new TimeInterval(Timestamp.fromString("2021-01-01"), Timestamp.fromString("2023-12-30"));
+    const evaluationInterval = new TimeInterval(Timestamp.fromString("2022-01-01"), Timestamp.fromString("2023-12-30"));
     const priceRepo = PriceRepository.fromFile();
     const strategy = new Strategy();
     const trend = priceRepo.trendFor(selectedStock).forInterval(evaluationInterval);

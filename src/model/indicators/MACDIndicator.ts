@@ -35,6 +35,13 @@ export class MACDIndicator {
         return this.macdValue() - this.signalValue();
     }
 
+    public normalizedStrength() {
+        if (Math.abs(this.signalValue() - 0.01) < 0) {
+            return 0;
+        }
+        return (this.macdValue() - this.signalValue()) / Math.abs(this.signalValue());
+    }
+
     public isBullish() {
         return this.strength() > 0;
     }
