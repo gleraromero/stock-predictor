@@ -1,9 +1,9 @@
-import { ReactChild } from "react";
+import { ReactNode } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { TimeInterval } from "src/model/TimeInterval";
 import { TimeResolution } from "src/model/TimeResolution";
 
-type MultiWindowTabGroupProps = { children: (interval: TimeInterval, resolution: TimeResolution) => ReactChild };
+type MultiWindowTabGroupProps = { children: (interval: TimeInterval, resolution: TimeResolution) => ReactNode };
 
 export const MultiWindowTabGroup = ({ children }: MultiWindowTabGroupProps) => {
     return (

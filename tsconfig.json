@@ -17,7 +17,7 @@
       "strict": true,
       "target": "ESNext",
       "module": "ES2020",
-      "types": ["vitest/globals", "vite/client"]
+      "types": ["vite/client"]
     },
     "include": ["src", "index.tsx"]
   }

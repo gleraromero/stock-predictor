@@ -1,7 +1,7 @@
-import { ReactChild } from "react";
+import { ReactNode } from "react";
 import { NavHeader } from "src/components/NavHeader";
 
-type PageProps = { children: ReactChild };
+type PageProps = { children: ReactNode };
 
 export const Page = ({ children }: PageProps) => {
     return (
